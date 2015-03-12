@@ -126,11 +126,17 @@ func Run(c *Config) {
 }
 
 func osxVersionSupported() bool {
-	v, err := exec.Command("/bin/sh", "-c", checkOSXVersion).Output()
+	v, err := exec.Command("/bin/sh", "-c", "sw_ver", "-productVersion").Output()
 	if err != nil {
+		log.Fatalf("%s", err.Error())
 		return false
 	}
-	return !strings.HasPrefix(string(v), "10.10")
+
+	// support os x 10.10
+	if strings.HasPrefix(string(v), "10.10") {
+		log.Printf("Only bandwidth limiting feature is supported on OS X 10.10!")
+	}
+	return true
 }
 
 func runCommand(cmd string) error {
